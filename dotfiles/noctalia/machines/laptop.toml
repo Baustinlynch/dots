@@ -1,0 +1,9 @@
+# Noctalia laptop profile (this machine: Dell Inspiron 3525)
+# Live: ~/.config/noctalia/config.toml → symlink to this file.
+# On a machine: ln -s ~/dots/dotfiles/noctalia/machines/laptop.toml ~/.config/noctalia/config.toml
+
+[include]
+files = ["~/dots/dotfiles/noctalia/shared.toml"]
+
+# Laptop-specific settings below. Currently no overrides — bar/battery/
+# brightness defaults are correct for the laptop. Add machine tweaks here.

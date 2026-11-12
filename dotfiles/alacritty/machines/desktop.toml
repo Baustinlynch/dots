@@ -1,0 +1,6 @@
+# Alacritty desktop overlay — selected by the machine.toml symlink
+# ln -s machines/desktop.toml machine.toml   (from dotfiles/alacritty/)
+# Larger font for the bigger 1440p panel.
+
+[font]
+size = 13.0

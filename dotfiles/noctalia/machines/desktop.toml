@@ -1,0 +1,18 @@
+# Noctalia desktop profile (1440p 4:3 OLED + 1080p ultrawide)
+# Live: ~/.config/noctalia/config.toml → symlink to this file.
+# On a machine: ln -s ~/dots/dotfiles/noctalia/machines/desktop.toml ~/.config/noctalia/config.toml
+
+[include]
+files = ["~/dots/dotfiles/noctalia/shared.toml"]
+
+# Desktop-specific settings below.
+
+[shell.window_switcher]
+# Two monitors: show previews from both screens
+show_all_outputs = true
+
+# Notes:
+# - Bars render on every monitor by default (no per-monitor config needed).
+# - GUI-managed overrides live in ~/.local/state/noctalia/settings.toml and
+#   WIN over this file; delete that file to clear GUI overrides.
+# - Validate after edits: noctalia config validate

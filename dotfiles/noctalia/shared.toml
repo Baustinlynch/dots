@@ -1,0 +1,9 @@
+# Noctalia shared settings (both machines)
+# Included by machines/laptop.toml and machines/desktop.toml.
+
+[theme]
+mode = "dark"
+
+[shell]
+# Setup wizard has been completed on the managed machines
+setup_wizard_enabled = false

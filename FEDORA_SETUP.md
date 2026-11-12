@@ -110,9 +110,12 @@ cd ~/dots
 
 ```bash
 # Mango (compositor) + Noctalia keybinds
-mkdir -p ~/.config/mango ~/.config/xdg-desktop-portal
-cp dotfiles/mango/config.conf dotfiles/mango/keybind.conf ~/.config/mango/
+mkdir -p ~/.config/mango ~/.config/xdg-desktop-portal ~/.config/noctalia
 cp dotfiles/mango/mango-portals.conf ~/.config/xdg-desktop-portal/
+# Machine overlay symlinks (laptop profile shown; use desktop.* for the desktop)
+ln -s machines/laptop.conf ~/dots/dotfiles/mango/machine.conf
+ln -s machines/laptop.toml ~/dots/dotfiles/alacritty/machine.toml
+ln -s ~/dots/dotfiles/noctalia/machines/laptop.toml ~/.config/noctalia/config.toml
 # Noctalia keeps its settings in ~/.config/noctalia/ (created on first run)
 
 # Alacritty (terminal)

@@ -51,11 +51,39 @@ ln -s ~/dots/dotfiles/mimeapps.list ~/.config/mimeapps.list
 mkdir -p ~/.config/xdg-desktop-portal
 cp dotfiles/mango/mango-portals.conf ~/.config/xdg-desktop-portal/
 
+# Machine overlay: pick this machine's profile
+ln -s machines/laptop.conf  ~/dots/dotfiles/mango/machine.conf
+ln -s machines/laptop.toml  ~/dots/dotfiles/alacritty/machine.toml
+
+# Noctalia machine profile
+mkdir -p ~/.config/noctalia
+ln -s ~/dots/dotfiles/noctalia/machines/laptop.toml ~/.config/noctalia/config.toml
+
 # Archived niri config (deprecated, kept for reference)
 # dotfiles/niri/*.kdl
 
 # Desktop entry is installed system-wide by the Slick package
 # (dotfiles/applications/ is reference only)
+```
+
+Noctalia keeps GUI overrides in `~/.local/state/noctalia/settings.toml`
+(written by the Settings GUI; those win over the files above).
+
+## Machine variants
+
+Per-machine settings live in `machines/` overlays selected by a symlink:
+
+| App | Shared | Machine overlays | Selector (gitignored) |
+|-----|--------|------------------|-----------------------|
+| Mango | `dotfiles/mango/config.conf`, `keybind.conf` | `machines/laptop.conf`, `machines/desktop.conf` | `~/.config/mango/machine.conf` symlink (also lives at `dotfiles/mango/machine.conf`) |
+| Noctalia | `dotfiles/noctalia/shared.toml` | `machines/laptop.toml`, `machines/desktop.toml` | `~/.config/noctalia/config.toml` symlink |
+| Alacritty | `dotfiles/alacritty/alacritty.toml` | `machines/laptop.toml`, `machines/desktop.toml` | `dotfiles/alacritty/machine.toml` symlink |
+
+Laptop = this machine (single display, scroller everywhere, trackpad,
+brightness keys, font 10.5).
+Desktop = 1440p 4:3 OLED + 1080p ultrawide: scroller on the ultrawide (main),
+tile on the 1440p, no trackpad/brightness, font 13. To switch a machine's
+profile, point its `machine.*` symlink at the other overlay.
 ```
 
 Noctalia keeps its own settings in `~/.config/noctalia/` (created on first run).

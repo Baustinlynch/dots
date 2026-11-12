@@ -1,0 +1,5 @@
+# Alacritty laptop overlay — selected by the machine.toml symlink
+# ln -s machines/laptop.toml machine.toml   (from dotfiles/alacritty/)
+
+[font]
+size = 10.5

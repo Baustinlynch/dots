@@ -21,3 +21,7 @@ Thumbs.db
 
 # User-specific
 .local/
+
+# Per-machine overlays (symlinked to machines/<machine>.conf on each box)
+dotfiles/mango/machine.conf
+dotfiles/alacritty/machine.toml

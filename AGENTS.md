@@ -10,6 +10,20 @@ Guidance for AI agents working in this dotfiles repo.
 - `dotfiles/waybar|fuzzel|mako|waypaper/` — legacy reference only; replaced by Noctalia shell
 - `FEDORA_SETUP.md` — full machine rebuild guide
 
+## Machine variants
+
+Machine-specific settings live in `machines/` overlays selected by a symlink
+(`dotfiles/mango/machine.conf` and `dotfiles/alacritty/machine.toml` are
+gitignored symlinks; `~/.config/noctalia/config.toml` is a symlink):
+
+- Mango: `config.conf` sources `~/.config/mango/machine.conf`
+  (`machines/laptop.conf` = trackpad + brightness keys + scroller-everywhere;
+  `machines/desktop.conf` = scroller on ultrawide, tile on 1440p via
+  `monitor_name:` tag rules — names are TODO placeholders until run on the desktop)
+- Noctalia: `machines/laptop.toml` / `desktop.toml` each include `shared.toml`
+- Alacritty: `alacritty.toml` imports `machine.toml` (font size per machine)
+- Validate: `mango -c ~/.config/mango/config.conf -p`, `noctalia config validate`
+
 ## Live configs are symlinks into this repo
 
 `~/.config/{alacritty,btop,zed,obsidian,mango}` are **directory symlinks** to
