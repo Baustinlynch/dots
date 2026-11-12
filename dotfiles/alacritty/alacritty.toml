@@ -3,6 +3,9 @@
 
 [general]
 live_config_reload = true
+# Machine overlay (laptop/desktop font size etc.)
+# Symlink: ~/.config/alacritty/machine.toml → machines/<machine>.toml
+import = ["~/.config/alacritty/machine.toml"]
 
 [terminal]
 shell = { program = "fish" }
@@ -23,11 +26,7 @@ history = 10000
 normal = { family = "JetBrainsMono Nerd Font Mono", style = "Regular" }
 bold = { family = "JetBrainsMono Nerd Font Mono", style = "Bold" }
 italic = { family = "JetBrainsMono Nerd Font Mono", style = "Italic" }
-# Size is machine-specific: see machines/<machine>.toml via the import below
-
-# Machine overlay (laptop/desktop font size etc.)
-# Symlink: ~/.config/alacritty/machine.toml → machines/<machine>.toml
-import = ["~/.config/alacritty/machine.toml"]
+# Size is machine-specific: see machines/<machine>.toml (imported via [general])
 
 [cursor]
 style = { shape = "Block", blinking = "On" }
