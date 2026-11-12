@@ -10,18 +10,21 @@ Guidance for AI agents working in this dotfiles repo.
 - `dotfiles/waybar|fuzzel|mako|waypaper/` — legacy reference only; replaced by Noctalia shell
 - `FEDORA_SETUP.md` — full machine rebuild guide
 
-## Live configs are copies, not symlinks
+## Live configs are symlinks into this repo
 
-`~/.config/<app>` contains **plain copies** of `dotfiles/<app>` — nothing is
-symlinked. After editing anything under `dotfiles/`, copy it to the live
-location or the change does nothing:
+`~/.config/{alacritty,btop,zed,obsidian,mango}` are **directory symlinks** to
+`dotfiles/<app>`, and `~/.config/{hyfetch.json,mimeapps.list}` are file symlinks.
+Editing `dotfiles/<app>/...` edits the live config directly — no copy step.
 
-```bash
-cp dotfiles/mango/config.conf dotfiles/mango/keybind.conf ~/.config/mango/
-```
-
-The reverse matters too: live configs can drift (GUI tools rewrite them).
-Before editing, diff against the repo copy and port live changes back.
+Caveats:
+- **Directory** symlinks survive apps that save atomically (write temp file +
+  rename): the replaced file lands inside the repo target dir.
+- **File** symlinks (`hyfetch.json`, `mimeapps.list`) can be silently replaced
+  by a real file when an app atomically rewrites them (e.g. `xdg-mime`).
+  If a link disappears, restore it: `ln -sf ~/dots/dotfiles/<file> ~/.config/<file>`.
+- `~/.config/xdg-desktop-portal/mango-portals.conf` is a plain copy, not linked.
+- The Slick desktop entry is installed system-wide in `/usr/share/applications`;
+  `dotfiles/applications/` is reference only.
 
 ## Mango specifics
 

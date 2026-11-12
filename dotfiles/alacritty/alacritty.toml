@@ -1,9 +1,7 @@
-# Alacritty config — managed from ~/nixos-config/dotfiles/alacritty/
-# Linked by Home Manager: xdg.configFile."alacritty/alacritty.toml".
+# Alacritty config
 # Reference for all options: https://alacritty.org/config-alacritty.html
 
 [general]
-import = []
 live_config_reload = true
 
 [terminal]
@@ -16,7 +14,7 @@ TERM = "alacritty"
 opacity = 0.95
 padding = { x = 6, y = 6 }
 decorations = "None"
-dynamic_title = true
+dynamic_title = false
 
 [scrolling]
 history = 10000
@@ -37,27 +35,3 @@ bindings = [
 ]
 
 [colors]
-# Catppuccin Latte
-background = "#eff1f5"
-foreground = "#4c4f69"
-selection = "#bcc0d4"
-search = {
-  matches = { foreground = "#4c4f69", background = "#ea76cb" }
-  focused_match = { foreground = "#4c4f69", background = "#7c829e" }
-}
-black = "#4c4f69"
-red = "#d20f39"
-green = "#40a02b"
-yellow = "#df8e1d"
-blue = "#1e66f5"
-magenta = "#ea76cb"
-cyan = "#179299"
-white = "#dce0e8"
-bright_black = "#5c5f77"
-bright_red = "#d20f39"
-bright_green = "#40a02b"
-bright_yellow = "#df8e1d"
-bright_blue = "#1e66f5"
-bright_magenta = "#ea76cb"
-bright_cyan = "#179299"
-bright_white = "#4c4f69"

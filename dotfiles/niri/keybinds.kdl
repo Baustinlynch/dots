@@ -1,3 +1,5 @@
 // keybinds managed by niri-settings. Consider moving existing binds here.
 binds {
+    // Ctrl+Shift+Minus types an em dash (—). Uses wtype from ~/.local/bin.
+    Ctrl+Shift+Minus { spawn "sh" "-c" "printf '%s' '—' | wtype -"; }
 }

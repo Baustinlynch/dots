@@ -30,36 +30,32 @@ This repository contains configuration files for:
 The easiest way to recreate this setup on Fedora is to follow the **[Fedora Setup Guide](FEDORA_SETUP.md)**.
 
 First install the desktop packages (see the [Fedora Setup Guide](FEDORA_SETUP.md)),
-then copy the configs:
+then symlink the configs (live configs link into the repo — edits apply instantly):
 
 ```bash
-git clone https://github.com/baustinlynch/dots ~/dots
+git clone https://github.com/Baustinlynch/dots ~/dots
 cd ~/dots
 
-# Copy configs
-mkdir -p ~/.config/mango
-cp dotfiles/mango/config.conf dotfiles/mango/keybind.conf ~/.config/mango/
+# Symlink app config dirs
+ln -s ~/dots/dotfiles/alacritty ~/.config/alacritty
+ln -s ~/dots/dotfiles/btop      ~/.config/btop
+ln -s ~/dots/dotfiles/zed       ~/.config/zed
+ln -s ~/dots/dotfiles/obsidian  ~/.config/obsidian
+ln -s ~/dots/dotfiles/mango     ~/.config/mango
+
+# Symlink single files
+ln -s ~/dots/dotfiles/hyfetch.json  ~/.config/hyfetch.json
+ln -s ~/dots/dotfiles/mimeapps.list ~/.config/mimeapps.list
+
+# Portals config (plain copy, not linked)
+mkdir -p ~/.config/xdg-desktop-portal
 cp dotfiles/mango/mango-portals.conf ~/.config/xdg-desktop-portal/
 
 # Archived niri config (deprecated, kept for reference)
 # dotfiles/niri/*.kdl
 
-mkdir -p ~/.config/alacritty
-cp dotfiles/alacritty/alacritty.toml ~/.config/alacritty/alacritty.toml
-
-mkdir -p ~/.config/zed
-cp dotfiles/zed/settings.json ~/.config/zed/settings.json
-
-mkdir -p ~/.config/obsidian
-cp dotfiles/obsidian/obsidian.json ~/.config/obsidian/obsidian.json
-
-mkdir -p ~/.config/btop
-cp dotfiles/btop/btop.conf ~/.config/btop/btop.conf
-cp dotfiles/btop/themes/catppuccin_frappe.theme ~/.config/btop/themes/
-
-# Copy desktop entry
-mkdir -p ~/.local/share/applications
-cp dotfiles/applications/dev.slick.Slick.desktop ~/.local/share/applications/
+# Desktop entry is installed system-wide by the Slick package
+# (dotfiles/applications/ is reference only)
 ```
 
 Noctalia keeps its own settings in `~/.config/noctalia/` (created on first run).

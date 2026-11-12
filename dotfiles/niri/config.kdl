@@ -302,12 +302,14 @@ hotkey-overlay {
 // Additionally, clients will be informed that they are tiled, removing some client-side rounded corners.
 // This option will also fix border/focus ring drawing behind some semitransparent windows.
 // After enabling or disabling this, you need to restart the apps for this to take effect.
-// prefer-no-csd
+prefer-no-csd
 
 // You can change the path where screenshots are saved.
 // A ~ at the front will be expanded to the home directory.
 // The path is formatted with strftime(3) to give you the screenshot date and time.
-screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
+// Disabled: screenshots are handled by Noctalia, which saves to its own
+// [shell.screenshot] directory/pattern configured in ~/.config/noctalia.
+screenshot-path null
 
 // You can also set this to null to disable saving screenshots to disk.
 // screenshot-path null
@@ -349,7 +351,7 @@ window-rule {
 // Make Obsidian semi-transparent at the compositor level.
 window-rule {
     match app-id="obsidian"
-    opacity 0.95
+    opacity 0.90
 }
 
 // Example: block out two password managers from screen capture.
@@ -367,9 +369,10 @@ window-rule {
 // Example: enable rounded corners for all windows.
 // (This example rule is commented out with a "/-" in front.)
 window-rule {
-    geometry-corner-radius 12
+    geometry-corner-radius 20
     clip-to-geometry true
 }
+
 
 binds {
     // Keys consist of modifiers separated by + signs, followed by an XKB key name
@@ -396,7 +399,7 @@ binds {
     // Noctalia window switcher (Niri also has its own overview: Mod+Shift+O)
     Alt+Tab hotkey-overlay-title="Window Switcher" { spawn-sh "noctalia msg window-switcher hold"; }
     Alt+Shift+Tab hotkey-overlay-title="Window Switcher (Reverse)" { spawn-sh "noctalia msg window-switcher hold reverse"; }
-    // Noctalia screenshot with annotate editor (Print keys use niri's built-in screenshots)
+    // Noctalia screenshot with annotate editor
     Mod+Shift+S hotkey-overlay-title="Screenshot (Noctalia)" { spawn-sh "noctalia msg screenshot-region --annotate"; }
     Mod+Z hotkey-overlay-title="Launch Zed Editor" { spawn "flatpak" "run" "dev.zed.Zed"; }
     Mod+B hotkey-overlay-title="Launch Zen Browser" { spawn "zen-browser"; }
@@ -648,9 +651,14 @@ binds {
     // Mod+Space       { switch-layout "next"; }
     // Mod+Shift+Space { switch-layout "prev"; }
 
-    Print { screenshot; }
-    Ctrl+Print { screenshot-screen; }
-    Alt+Print { screenshot-window; }
+    // Screenshots are handled by Noctalia (niri's built-in screenshot actions disabled below).
+    // The commented lines are niri's built-in actions, kept in case you want them back.
+    Print hotkey-overlay-title="Screenshot (Noctalia)" { spawn-sh "noctalia msg screenshot-region"; }
+    Ctrl+Print hotkey-overlay-title="Screenshot Fullscreen (Noctalia)" { spawn-sh "noctalia msg screenshot-fullscreen"; }
+    Alt+Print hotkey-overlay-title="Screenshot Window (Noctalia)" { spawn-sh "noctalia msg screenshot-window"; }
+    // Print { screenshot; }
+    // Ctrl+Print { screenshot-screen; }
+    // Alt+Print { screenshot-window; }
 
     // Applications such as remote-desktop clients and software KVM switches may
     // request that niri stops processing the keyboard shortcuts defined here
@@ -720,3 +728,5 @@ blur {
 include "basicsettings.kdl" // Added by niri-settings
 
 include "keybinds.kdl" // Added by niri-settings
+
+include "noctalia.kdl"
