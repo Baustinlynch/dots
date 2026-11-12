@@ -5,11 +5,8 @@ This guide explains how to recreate your NixOS Wayland desktop setup on Fedora w
 ## Overview
 
 Your current setup uses:
-- **Window Manager:** Niri
-- **Status Bar:** Waybar
-- **App Launcher:** Fuzzel
-- **Notification Daemon:** Mako
-- **Wallpaper Manager:** Waypaper (with `awww` backend)
+- **Window Manager:** Mango (replaced Niri on 2026-11-12)
+- **Desktop Shell:** Noctalia (bar, launcher, notifications, wallpaper, lock screen, control center)
 - **Terminal:** Alacritty
 - **Editor:** Zed
 - **Notes:** Obsidian
@@ -43,14 +40,16 @@ flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.f
 ### From Official Fedora Repos
 
 ```bash
-sudo dnf install niri waybar fuzzel mako alacritty alacritty-terminfo \
-                 waypaper awww zed-editor \
+# Terra repository (hosts mangowm)
+sudo dnf install --nogpgcheck --repofrompath 'terra,https://repos.fyralabs.com/terra$releasever' terra-release
+
+sudo dnf install mangowm noctalia alacritty alacritty-terminfo \
+                 zed-editor \
                  btop hyfetch qalculate-gtk \
                  steam slack discord signal-desktop \
                  tor-browser rpi-imager \
-                 nautilus blueman pavucontrol networkmanager-applet \
-                 pamixer playerctl brightnessctl wl-clipboard \
-                 grim slurp swappy swaylock xdg-utils polkit-gnome \
+                 nautilus pavucontrol \
+                 wl-clipboard xdg-utils \
                  git curl wget htop ripgrep fd jq \
                  vim neovim gcc make cmake python3 nodejs go rustup \
                  qdirstat pandoc \
@@ -90,11 +89,6 @@ flatpak install flathub dev.zed.Zed
 ### From Git/Pip
 
 ```bash
-# Waypaper (git version needed for `awww` backend)
-sudo dnf groupinstall development-tools
-sudo dnf install cairo-devel cairo-gobject-devel gobject-introspection-devel python3-devel
-pipx install git+https://github.com/anufrievroman/waypaper
-
 # Teams for Linux RPM (alternative to Flatpak)
 curl -fsSL https://repo.teamsforlinux.de/install.sh | sudo bash
 
@@ -115,35 +109,15 @@ cd ~/dots
 ### Core Desktop Configs
 
 ```bash
-# Niri (compositor)
-mkdir -p ~/.config/niri
-cp dotfiles/niri/config.kdl ~/.config/niri/
-
-# Waybar (status bar)
-mkdir -p ~/.config/waybar
-cp dotfiles/waybar/config ~/.config/waybar/config
-cp dotfiles/waybar/style.css ~/.config/waybar/style.css
-
-# Fuzzel (app launcher)
-mkdir -p ~/.config/fuzzel
-cp dotfiles/fuzzel/fuzzel.ini ~/.config/fuzzel/fuzzel.ini
-
-# Mako (notifications)
-mkdir -p ~/.config/mako
-cp dotfiles/mako/config ~/.config/mako/config
+# Mango (compositor) + Noctalia keybinds
+mkdir -p ~/.config/mango ~/.config/xdg-desktop-portal
+cp dotfiles/mango/config.conf dotfiles/mango/keybind.conf ~/.config/mango/
+cp dotfiles/mango/mango-portals.conf ~/.config/xdg-desktop-portal/
+# Noctalia keeps its settings in ~/.config/noctalia/ (created on first run)
 
 # Alacritty (terminal)
 mkdir -p ~/.config/alacritty
 cp dotfiles/alacritty/alacritty.toml ~/.config/alacritty/alacritty.toml
-```
-
-### Wallpaper Config
-
-```bash
-# Waypaper
-mkdir -p ~/.config/waypaper
-cp dotfiles/waypaper/config.ini ~/.config/waypaper/config.ini
-# Note: You may need to update paths in config.ini for your user
 ```
 
 ### Editor & Notes Config
@@ -180,74 +154,12 @@ cp dotfiles/applications/dev.slick.Slick.desktop ~/.local/share/applications/
 
 ## Step 4: Systemd User Services
 
-Create user systemd services for desktop session apps:
-
-```bash
-mkdir -p ~/.config/systemd/user
-```
-
-### Waybar Service
-
-```ini
-# ~/.config/systemd/user/waybar.service
-[Unit]
-Description=Waybar status bar
-After=graphical-session.target
-
-[Service]
-Type=simple
-ExecStart=/usr/bin/waybar
-Restart=on-failure
-RestartSec=2
-
-[Install]
-WantedBy=graphical-session.target
-```
-
-### Waypaper Service (restore wallpaper on login)
-
-```ini
-# ~/.config/systemd/user/waypaper.service
-[Unit]
-Description=Waypaper wallpaper restore
-After=graphical-session.target
-Wants=graphical-session.target
-
-[Service]
-Type=oneshot
-ExecStart=/usr/bin/waypaper --restore
-
-[Install]
-WantedBy=graphical-session.target
-```
-
-### awww-daemon (wallpaper backend)
-
-```ini
-# ~/.config/systemd/user/awww-daemon.service
-[Unit]
-Description=awww wallpaper daemon
-After=graphical-session.target
-
-[Service]
-Type=simple
-ExecStart=/usr/bin/awww-daemon
-Restart=on-failure
-RestartSec=2
-
-[Install]
-WantedBy=graphical-session.target
-```
-
-### Enable Services
-
-```bash
-systemctl --user daemon-reload
-systemctl --user enable waybar.service
-systemctl --user enable waypaper.service
-systemctl --user enable awww-daemon.service
-systemctl --user start waybar.service
-```
+No manual user services are needed. Noctalia is spawned at startup by mango
+(`exec_once=noctalia` in `~/.config/mango/config.conf`), and optionally
+managed as a systemd user unit — see the
+[Noctalia systemd service docs](https://docs.noctalia.dev/noctalia/compositor-settings/systemd-service/).
+Noctalia also handles wallpaper, notifications, the bar, the launcher, and the
+lock screen itself, so no waybar/waypaper/awww/mako services are required.
 
 ## Step 5: Network Configuration
 
@@ -290,11 +202,12 @@ sudo dnf install noto-fonts noto-fonts-cjk-sans noto-fonts-color-emoji
 
 Your configs already use Catppuccin colors:
 
-- `waybar/style.css` - Catppuccin Latte theme
-- `fuzzel/fuzzel.ini` - Catppuccin colors
-- `mako/config` - Catppuccin colors
 - `alacritty/alacritty.toml` - Catppuccin Latte
 - `btop/themes/catppuccin_frappe.theme` - Catppuccin Frappe
+
+Noctalia provides its own theming: choose a palette in Settings → Theme, or
+generate one from your wallpaper (see
+[theming docs](https://docs.noctalia.dev/noctalia/theming/)).
 
 ## Step 7: Terminal & Shell
 
@@ -342,64 +255,65 @@ pip install hermes-agent
 ## Step 9: Final Steps
 
 1. **Log out and log back in** to apply user systemd services
-2. **Select Niri** at the login screen (if using GDM)
+2. **Select Mango** at the login screen (if using GDM)
 3. **Configure remaining settings** in each application
 
-### Keyboard Shortcuts (Niri)
+### Keyboard Shortcuts (Mango)
 
-Your existing Niri config uses:
+Your existing Mango config uses:
 
 | Key | Action |
 |-----|--------|
 | `Super + Return` | Open terminal |
-| `Super + Space` | Open app launcher |
+| `Super + Space` | Open Noctalia launcher |
+| `Super + S` | Open Noctalia control center |
+| `Super + Shift + ,` | Open Noctalia settings |
+| `Alt + Tab` | Noctalia window switcher |
 | `Super + Q` | Close window |
-| `Super + Shift + E` | Quit Niri |
-| `Super + Shift + /` | Show hotkey overlay |
+| `Super + Shift + E` | Quit Mango |
+| `Super + 1..9` | View tag |
+| `Super + W` | Cycle layout |
 
 ## Troubleshooting
 
-### Waybar Not Starting
+### Noctalia Not Starting
 
 ```bash
-# Check if waybar binary exists
-which waybar
+# Check if the binary exists
+which noctalia
 
 # Start manually to see errors
-waybar
+NOCTALIA_LOG_LEVEL=debug noctalia
 ```
 
 ### Notifications Not Showing
 
 ```bash
-# Ensure mako is running
+# Ensure Noctalia is running (it owns the notification daemon)
+pgrep -a noctalia
+
+# Verify no other notification daemon is running
 pgrep -a mako
-
-# Start mako if not running
-mako
 ```
 
-### Wallpaper Not Restoring
+### Wallpaper Not Showing
 
 ```bash
-# Check waypaper service status
-systemctl --user status waypaper
+# Set a wallpaper via IPC
+noctalia msg wallpaper-set ~/Pictures/Background/wallpaper.png
 
-# Check awww-daemon status
-systemctl --user status awww-daemon
-
-# Test manually
-waypaper --restore
+# Or pick one in the settings GUI
+noctalia msg settings-toggle
 ```
 
-### Niri Not Available at Login
+### Mango Not Available at Login
 
 ```bash
-# Ensure niri is installed
-dnf list installed niri
+# Ensure mango is installed
+dnf list installed mangowm
 
-# Check if niri session file exists
-ls /usr/share/wayland-sessions/
+# Check if the mango session file exists
+ls /usr/share/wayland-sessions/mango.desktop
 ```
 
 ### Problems with Specific Apps
@@ -410,11 +324,8 @@ ls /usr/share/wayland-sessions/
 
 ## References
 
-- [Niri Documentation](https://niri-wm.github.io/niri/)
-- [Waybar GitHub](https://github.com/Alexays/Waybar)
-- [Fuzzel GitHub](https://github.com/dnkl/fuzzel)
-- [Mako GitHub](https://github.com/emersion/mako)
-- [Waypaper GitHub](https://github.com/anufrievroman/waypaper)
+- [Mango Documentation](https://mangowm.github.io/docs/)
+- [Noctalia Documentation](https://docs.noctalia.dev/noctalia/)
 - [Zed Installation](https://zed.dev/docs/installation)
 - [Obsidian Installation](https://obsidian.md/help/install)
 - [btop GitHub](https://github.com/Grtanner/btop)

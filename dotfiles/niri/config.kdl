@@ -267,24 +267,27 @@ layout {
 // which may be more convenient to use.
 // See the binds section below for more spawn examples.
 
-// Waybar is now managed by the waybar.service systemd user unit (starts on boot).
-// spawn-at-startup "waybar"
 // X11 apps (Steam etc.) use the Xwayland started by xwayland-satellite on :0.
 environment {
     DISPLAY ":0"
 }
 
+// Desktop shell: bar, launcher, notifications, wallpaper, lock screen, control
+// center, screenshots. Replaces waybar, waypaper, mako, fuzzel, swaylock,
+// nm-applet and blueman-applet (Noctalia provides them all natively).
+spawn-at-startup "noctalia"
+
+// The old stack, disabled in favor of Noctalia. Add these back (and disable
+// noctalia above) to switch back to waybar/waypaper/mako/fuzzel.
+// spawn-at-startup "mako"                          // notifications (Noctalia has its own daemon)
+// spawn-at-startup "polkit-gnome-authentication-agent-1" // Noctalia ships its own polkit agent
+// spawn-at-startup "nm-applet"                    // network: Noctalia control center
+// spawn-at-startup "blueman-applet"               // bluetooth: Noctalia control center
+// spawn-at-startup "waypaper" "--restore"         // wallpaper: Noctalia handles it
+// spawn-at-startup "waybar"
+
 // X11 bridge (needed for Steam and other X11-only apps)
 spawn-at-startup "xwayland-satellite"
-// Notification daemon
-spawn-at-startup "mako"
-// Polkit authentication agent
-spawn-at-startup "polkit-gnome-authentication-agent-1"
-// Network/Bluetooth applets
-spawn-at-startup "nm-applet"
-spawn-at-startup "blueman-applet"
-// Wallpaper: restored by the waypaper.service systemd user unit, which is
-// ordered after awww-daemon.service (waypaper --restore hangs without the daemon).
 
 // To run a shell command (with variables, pipes, etc.), use spawn-sh-at-startup:
 // spawn-sh-at-startup "qs -c ~/source/qs/MyAwesomeShell"
@@ -385,11 +388,19 @@ binds {
 
     // Suggested binds for running programs: terminal, app launcher, screen locker.
     Mod+Return hotkey-overlay-title="Open a Terminal: alacritty" { spawn "alacritty"; }
-    Mod+Space hotkey-overlay-title="Run an Application: fuzzel" { spawn "fuzzel"; }
-    Super+Alt+L hotkey-overlay-title="Lock the Screen: swaylock" { spawn "swaylock"; }
-    Mod+Z hotkey-overlay-title="Launch Zed Editor" { spawn "zeditor"; }
-    Mod+B hotkey-overlay-title="Launch Zen Browser" { spawn "zen-beta"; }
-    Mod+O hotkey-overlay-title="Launch Obsidian" { spawn "obsidian"; }
+    Mod+Space hotkey-overlay-title="Open Noctalia Launcher" { spawn-sh "noctalia msg panel-toggle launcher"; }
+    Super+Alt+L hotkey-overlay-title="Lock the Screen: Noctalia" { spawn-sh "noctalia msg session lock"; }
+    // Noctalia control center and settings
+    Mod+S hotkey-overlay-title="Noctalia Control Center" { spawn-sh "noctalia msg panel-toggle control-center"; }
+    Mod+Shift+Comma hotkey-overlay-title="Noctalia Settings" { spawn-sh "noctalia msg settings-toggle"; }
+    // Noctalia window switcher (Niri also has its own overview: Mod+Shift+O)
+    Alt+Tab hotkey-overlay-title="Window Switcher" { spawn-sh "noctalia msg window-switcher hold"; }
+    Alt+Shift+Tab hotkey-overlay-title="Window Switcher (Reverse)" { spawn-sh "noctalia msg window-switcher hold reverse"; }
+    // Noctalia screenshot with annotate editor (Print keys use niri's built-in screenshots)
+    Mod+Shift+S hotkey-overlay-title="Screenshot (Noctalia)" { spawn-sh "noctalia msg screenshot-region --annotate"; }
+    Mod+Z hotkey-overlay-title="Launch Zed Editor" { spawn "flatpak" "run" "dev.zed.Zed"; }
+    Mod+B hotkey-overlay-title="Launch Zen Browser" { spawn "zen-browser"; }
+    Mod+O hotkey-overlay-title="Launch Obsidian" { spawn "flatpak" "run" "md.obsidian.Obsidian"; }
 
     // Use spawn-sh to run a shell command. Do this if you need pipes, multiple commands, etc.
     // Note: the entire command goes as a single argument. It's passed verbatim to `sh -c`.
@@ -401,23 +412,23 @@ binds {
     // Using spawn-sh allows to pass multiple arguments together with the command.
     // "-l 1.0" limits the volume to 100%.
     XF86Calculator repeat=false allow-when-locked=true hotkey-overlay-title="Calculator" { spawn "alacritty" "-e" "qcalc"; }
-    XF86AudioRaiseVolume allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.1+ -l 1.0"; }
-    XF86AudioLowerVolume allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.1-"; }
-    XF86AudioMute        allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"; }
-    XF86AudioMicMute     allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"; }
+    XF86AudioRaiseVolume allow-when-locked=true { spawn-sh "noctalia msg volume-up"; }
+    XF86AudioLowerVolume allow-when-locked=true { spawn-sh "noctalia msg volume-down"; }
+    XF86AudioMute        allow-when-locked=true { spawn-sh "noctalia msg volume-mute"; }
+    XF86AudioMicMute     allow-when-locked=true { spawn-sh "noctalia msg mic-mute"; }
 
     // Example media keys mapping using playerctl.
     // This will work with any MPRIS-enabled media player.
-    XF86AudioPlay        allow-when-locked=true { spawn-sh "playerctl play-pause"; }
-    XF86AudioStop        allow-when-locked=true { spawn-sh "playerctl stop"; }
-    XF86AudioPrev        allow-when-locked=true { spawn-sh "playerctl previous"; }
-    XF86AudioNext        allow-when-locked=true { spawn-sh "playerctl next"; }
+    XF86AudioPlay        allow-when-locked=true { spawn-sh "noctalia msg media toggle"; }
+    XF86AudioStop        allow-when-locked=true { spawn-sh "noctalia msg media stop"; }
+    XF86AudioPrev        allow-when-locked=true { spawn-sh "noctalia msg media previous"; }
+    XF86AudioNext        allow-when-locked=true { spawn-sh "noctalia msg media next"; }
 
     // Example brightness key mappings for brightnessctl.
     // You can use regular spawn with multiple arguments too (to avoid going through "sh"),
     // but you need to manually put each argument in separate "" quotes.
-    XF86MonBrightnessUp allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "+10%"; }
-    XF86MonBrightnessDown allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "10%-"; }
+    XF86MonBrightnessUp allow-when-locked=true { spawn-sh "noctalia msg brightness-up"; }
+    XF86MonBrightnessDown allow-when-locked=true { spawn-sh "noctalia msg brightness-down"; }
 
     // Open/close the Overview: a zoomed-out view of workspaces and windows.
     // You can also move the mouse into the top-left hot corner,
@@ -659,3 +670,53 @@ binds {
     // moving the mouse or pressing any other key.
     Mod+Shift+P { power-off-monitors; }
 }
+
+// ─────────── Noctalia (https://docs.noctalia.dev) ───────────
+
+// Noctalia settings GUI opens as a floating window.
+window-rule {
+    match app-id="dev.noctalia.Noctalia"
+    open-floating true
+    default-column-width { fixed 1080; }
+    default-window-height { fixed 920; }
+}
+
+// Allows notification actions and window activation from Noctalia.
+debug {
+    honor-xdg-activation-with-invalid-serial
+}
+
+// Show Noctalia's blurred backdrop wallpaper inside niri's overview
+// (requires the niri backdrop option in Noctalia settings, on by default).
+layer-rule {
+    match namespace="^noctalia-backdrop"
+    place-within-backdrop true
+}
+
+// Blur behind all windows (niri 26.04+).
+window-rule {
+    background-effect {
+        blur true
+        xray false
+    }
+}
+
+// Noctalia surfaces: keep client-requested blur, disable xray for realism.
+layer-rule {
+    match namespace=r#"^noctalia-(bar-[^"]+|notification|dock|panel|attached-panel|osd|window-switcher)+"#
+    background-effect {
+        xray false
+    }
+}
+
+// Blur tuning.
+blur {
+    passes 2
+    offset 3.0
+    noise 0.03
+    saturation 1.0
+}
+
+include "basicsettings.kdl" // Added by niri-settings
+
+include "keybinds.kdl" // Added by niri-settings
