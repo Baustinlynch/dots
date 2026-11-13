@@ -1,8 +1,10 @@
 # Noctalia shared settings (both machines)
 # Included by machines/laptop.toml and machines/desktop.toml.
+# NOTE: ~/.local/state/noctalia/settings.toml (also in this repo, symlinked)
+# is written by the Settings GUI and WINS over everything here.
 
 [theme]
-mode = "dark"
+mode = "light"
 
 [shell]
 # Setup wizard has been completed on the managed machines

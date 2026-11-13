@@ -68,8 +68,19 @@ ln -s ~/dots/dotfiles/noctalia/machines/laptop.toml ~/.config/noctalia/config.to
 # (dotfiles/applications/ is reference only)
 ```
 
-Noctalia keeps GUI overrides in `~/.local/state/noctalia/settings.toml`
-(written by the Settings GUI; those win over the files above).
+Noctalia's GUI writes its overrides to `~/.local/state/noctalia/settings.toml`
+(symlinked into the repo as `dotfiles/noctalia/settings.toml`; those win over
+the files above). On a new machine, link it after Noctalia has created the
+state dir:
+
+```bash
+mkdir -p ~/.local/state/noctalia
+ln -s ~/dots/dotfiles/noctalia/settings.toml ~/.local/state/noctalia/settings.toml
+```
+
+If the link disappears (Noctalia rewrote it atomically), restore it with
+`ln -sf`. Runtime data in `~/.local/state/noctalia/` (clipboard, screen-time,
+caches) stays machine-local.
 
 ## Machine variants
 

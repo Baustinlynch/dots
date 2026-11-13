@@ -116,6 +116,10 @@ cp dotfiles/mango/mango-portals.conf ~/.config/xdg-desktop-portal/
 ln -s machines/laptop.conf ~/dots/dotfiles/mango/machine.conf
 ln -s machines/laptop.toml ~/dots/dotfiles/alacritty/machine.toml
 ln -s ~/dots/dotfiles/noctalia/machines/laptop.toml ~/.config/noctalia/config.toml
+# GUI-managed settings (bar layout, theme, wallpaper) — link after Noctalia has
+# created the state dir on first run:
+mkdir -p ~/.local/state/noctalia
+ln -s ~/dots/dotfiles/noctalia/settings.toml ~/.local/state/noctalia/settings.toml
 # Noctalia keeps its settings in ~/.config/noctalia/ (created on first run)
 
 # Alacritty (terminal)

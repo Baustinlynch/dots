@@ -6,6 +6,7 @@ Guidance for AI agents working in this dotfiles repo.
 
 - `dotfiles/` — canonical config sources, organized per app
 - `dotfiles/mango/` — compositor config (`config.conf`, `keybind.conf`) + `mango-portals.conf`
+- `dotfiles/noctalia/` — `shared.toml` + `machines/*.toml` overlays + `settings.toml` (GUI-managed settings, symlinked live at `~/.local/state/noctalia/settings.toml`; wins over the TOML overlays)
 - `dotfiles/fish/` — shell config (`config.fish`, `conf.d/`, `completions/`); `fish_variables` is gitignored machine state
 - `dotfiles/niri/` — **archived**, do not edit or "modernize" (see `DEPRECATED.md`)
 - `dotfiles/waybar|fuzzel|mako|waypaper/` — legacy reference only; replaced by Noctalia shell
@@ -29,14 +30,19 @@ gitignored symlinks; `~/.config/noctalia/config.toml` is a symlink):
 
 `~/.config/{alacritty,btop,zed,obsidian,mango,fish}` are **directory symlinks** to
 `dotfiles/<app>`, and `~/.config/{hyfetch.json,mimeapps.list}` are file symlinks.
+`~/.local/state/noctalia/settings.toml` is also a file symlink into the repo
+(`dotfiles/noctalia/settings.toml` — the Settings GUI writes it and it wins over
+the overlay TOMLs).
 Editing `dotfiles/<app>/...` edits the live config directly — no copy step.
 
 Caveats:
 - **Directory** symlinks survive apps that save atomically (write temp file +
   rename): the replaced file lands inside the repo target dir.
-- **File** symlinks (`hyfetch.json`, `mimeapps.list`) can be silently replaced
-  by a real file when an app atomically rewrites them (e.g. `xdg-mime`).
-  If a link disappears, restore it: `ln -sf ~/dots/dotfiles/<file> ~/.config/<file>`.
+- **File** symlinks (`hyfetch.json`, `mimeapps.list`,
+  `~/.local/state/noctalia/settings.toml`) can be silently replaced
+  by a real file when an app atomically rewrites them (e.g. `xdg-mime`,
+  Noctalia Settings GUI). If a link disappears, restore it:
+  `ln -sf ~/dots/dotfiles/<file> ~/.config/<file>`.
 - `~/.config/xdg-desktop-portal/mango-portals.conf` is a plain copy, not linked.
 - The Slick desktop entry is installed system-wide in `/usr/share/applications`;
   `dotfiles/applications/` is reference only.
