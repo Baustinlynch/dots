@@ -223,12 +223,14 @@ sudo dnf install fish
 chsh -s /usr/bin/fish
 ```
 
-Copy any fish config from your previous setup:
+Link the fish config into the repo (live config, edits apply instantly):
 
 ```bash
-mkdir -p ~/.config/fish
-# Copy fish config files
+ln -s ~/dots/dotfiles/fish ~/.config/fish
 ```
+
+`fish_variables` is fish's auto-generated state file — it is gitignored and
+stays machine-local.
 
 ## Step 8: Additional Applications
 

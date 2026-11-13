@@ -6,6 +6,7 @@ Guidance for AI agents working in this dotfiles repo.
 
 - `dotfiles/` — canonical config sources, organized per app
 - `dotfiles/mango/` — compositor config (`config.conf`, `keybind.conf`) + `mango-portals.conf`
+- `dotfiles/fish/` — shell config (`config.fish`, `conf.d/`, `completions/`); `fish_variables` is gitignored machine state
 - `dotfiles/niri/` — **archived**, do not edit or "modernize" (see `DEPRECATED.md`)
 - `dotfiles/waybar|fuzzel|mako|waypaper/` — legacy reference only; replaced by Noctalia shell
 - `FEDORA_SETUP.md` — full machine rebuild guide
@@ -26,7 +27,7 @@ gitignored symlinks; `~/.config/noctalia/config.toml` is a symlink):
 
 ## Live configs are symlinks into this repo
 
-`~/.config/{alacritty,btop,zed,obsidian,mango}` are **directory symlinks** to
+`~/.config/{alacritty,btop,zed,obsidian,mango,fish}` are **directory symlinks** to
 `dotfiles/<app>`, and `~/.config/{hyfetch.json,mimeapps.list}` are file symlinks.
 Editing `dotfiles/<app>/...` edits the live config directly — no copy step.
 
