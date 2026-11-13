@@ -13,6 +13,7 @@ This repository contains configuration files for:
 - **Obsidian** — Notes application settings
 - **btop** — Process monitor
 - **Alacritty** — Terminal emulator configuration
+- **Fish** — Shell config (`config.fish`, `conf.d/`, completions; `fish_variables` is gitignored state)
 
 ### Applications
 - **Steam**, **Spotify**, **Tor Browser**, and many other applications
@@ -42,6 +43,7 @@ ln -s ~/dots/dotfiles/btop      ~/.config/btop
 ln -s ~/dots/dotfiles/zed       ~/.config/zed
 ln -s ~/dots/dotfiles/obsidian  ~/.config/obsidian
 ln -s ~/dots/dotfiles/mango     ~/.config/mango
+ln -s ~/dots/dotfiles/fish      ~/.config/fish
 
 # Symlink single files
 ln -s ~/dots/dotfiles/hyfetch.json  ~/.config/hyfetch.json
@@ -79,8 +81,8 @@ Per-machine settings live in `machines/` overlays selected by a symlink:
 | Noctalia | `dotfiles/noctalia/shared.toml` | `machines/laptop.toml`, `machines/desktop.toml` | `~/.config/noctalia/config.toml` symlink |
 | Alacritty | `dotfiles/alacritty/alacritty.toml` | `machines/laptop.toml`, `machines/desktop.toml` | `dotfiles/alacritty/machine.toml` symlink |
 
-Laptop = this machine (single display, scroller everywhere, trackpad,
-brightness keys, font 10.5).
+Laptop = single display, scroller everywhere, trackpad,
+brightness keys, font 10.5
 Desktop = 1440p 4:3 OLED + 1080p ultrawide: scroller on the ultrawide (main),
 tile on the 1440p, no trackpad/brightness, font 13. To switch a machine's
 profile, point its `machine.*` symlink at the other overlay.
